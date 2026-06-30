@@ -7,23 +7,25 @@
 
 ## 1. Contexte
 
-Acerox est une entreprise de Metallurgie, qui possède 3 site de production.
+Acerox est une entreprise de Metallurgie, qui possède 3 site de production sur: Lyon, Saint-Etienne et Roubaix.
 
-Ils ont mis en place un modèle il y a 2 ans pour prédire les NC et faire une maintenance par anticipation.
+Nous avons réalisé un entretien avec le client le 30-06-2026 pour recueillir son besoin, ses attentes et mieux comprendre les enjeux de la demande.
 
-Il souhaiterait améliorer ce modèle, notamment pour mieux détecter sur le site de Roubaix qui semble avoir beaucoup plus de NC non détectée.
+Lors de l'entretien, le client nous a indiqué que les 3 sites de production sont équivalents et ont chacun 1 seule ligne de production.
+
+La société a mis en place un modèle il y a 2 ans pour prédire les défauts et permettra une maintenance préventive.
+
+Le client souhaiterait améliorer ce modèle, notamment pour mieux détecter les défauts sur le site de Roubaix qui semble avoir beaucoup plus de non conformités (NC) non détectées que les autres sites.
 
 ## 2. Demande métier reformulée
 
-Ce que Sébastien a demandé : Réduire de 20% les NC non détectée sur le site de Roubaix.
+Le client souhaite réduire de 20% les NC non détectées sur le site de Roubaix.
 
-Ce que je comprends qu'il cherche vraiment : Mieux prédire les NC sur les 3 sites de production et mieux comprendre les causes qui font que le site de Roubaix a des taux supérieurs de NC comparé aux autres sites.
+Au travers de sa demande, nous proposons de mieux prédire les NC sur les 3 sites de production pour avoir une meilleure anticipation, ainsi que de mieux comprendre les causes qui font que le site de Roubaix a des taux supérieurs de NC comparé aux autres sites.
 
 ## 3. Inventaire des sources
 
-> Une ligne par source que **vous** avez identifiée (fichiers reçus +
-> ce que vous découvrez en explorant les données). Le nom exact du fichier
-> fait partie de l'inventaire à dresser.
+Le client nous a fourni 3 sources de données :
 
 | Source | Format | Volume | Période / Fréquence | Qualité observée | Risques RGPD | Pertinence métier |
 |---|---|---|---|---|---|---|
@@ -33,28 +35,30 @@ Ce que je comprends qu'il cherche vraiment : Mieux prédire les NC sur les 3 sit
 
 ## 4. Recommandations
 
-> 3-5 puces. Quelles sources ingérer en priorité ? Lesquelles écarter et
-> pourquoi ?
-
-- Les 2 sources à ingérer en priorité sont capteurs_iot.csv et logs_machines.log. Elles contiennent toutes deux des informations capitales pour prévenir les non conformités.
+Après une rapide analyse des données concernant ces 3 sources, voici nos recommandations : 
+- Les 2 sources à ingérer en priorité sont capteurs_iot.csv et logs_machines.log. Elles contiennent toutes deux des informations capitales sur les lignes de production pour prévenir les non conformités, et anticiper les périodes de maintenance.
 - La source erp_export.json donne des informations sur les commandes et les statuts, mais il ne semble pas y avoir de corrélation entre les statuts des commandes et les arrets, ni entre les salariés et les arrêts. C'est donc une source à écarter.
+
+La qualité des données est satisfaisante : 
+* Pas de données manquante significative (Seulement ouvrier_id sur erp_export.json qui n'est pas signifitcatif)
+* Volume de données suffisant pour un premier EDA
+* Les 3 sources sont sur une même période temporelle, ce qui permet de faire des corrélations
+* Il sera nécessaire de formatter les données issues des logs machines pour les structurer et pouvoir s'en servir
+
+Il y a cependant un point déterminant qu'il va falloir approfondir: contrairement au contexte initial, il s'avère qu'il y a plusieurs lignes de productions sur différents sites. Nous aurons donc besoin d'élements complémentaires pour mieux évaluer le dispositif et ainsi pondérer correctement le modèle pour éviter les biais.
  
 
 ## 5. Points à clarifier avec Sébastien
 
-> 3-5 questions ouvertes restantes — preuve de lucidité sur ce qu'on ne
-> sait pas encore.
-
-1. Il y a 4 lignes de production sur Roubaix, 3 sur St Etienne, et 1 seule sur Lyon. Les 3 sites ne sont donc pas équivalents. Peut-on avoir des indications plus précises sur ces différentes lignes de production, leurs spécificités et leur ancienneté ?
-2. Quelle est la température nominale de fonctionnement de LINE-3 de Roubaix ou des lignes en générale si elles sont comparables ? 
-3. Quelle est la vibration nominale de fonctionnement de LINE-3 de Roubaix ou des lignes en générale si elles sont comparables ?  
+1. Il y a 4 lignes de production sur Roubaix, 3 sur St Etienne, et 1 seule sur Lyon. Les 3 sites ne sont donc pas équivalents. Peut-on avoir des indications plus précises sur ces différentes lignes de production, leurs spécificités (équipement ou contraintes spécifiques) et leur ancienneté ?
+2. Quelle est la température nominale de fonctionnement des lignes en générale si elles sont comparables ? Et en particulier de la LINE-3 de Roubaix ?
+3. Quelle est la vibration nominale de fonctionnement des lignes en générale si elles sont comparables ? Et en particulier de la LINE-3 de Roubaix ?
+4. Les seuils de détection des capteurs sont différents selon les sites : sur Lyon 1 seul capteur fait 10 000 mesures, contre 3 capteurs sur aint Etienne qui font respectivement 7000 mesures, et contre les 4 capteurs de Roubaix qui font chacun seulement 5 mesures. Est-ce qu'il y a une raison pour expliquer ces différences ? Par exemple par rapport au volume de données que cela représente et donc à la capacité de stockage ?
+5. Quel est le critère dans les éléments donnés qui permet d'identifier un arret suite à une NC sur la ligne de production ? Peut-on utiliser les "emergency_stop" comme evenement de ce type ? En effet, nous avons besoin d'identifier quel est le critère cible pour mesurer les détections des incidents que l'on souhaite éviter et surtout d'évaluer l'amélioration approtée par le nouveau modèle.
 
 ## 6. Limites de cette note
 
-> Ce qu'on n'a **pas** fait, et qu'il faudrait faire plus tard.
-
-- Pas d'analyse statistique fouillée des sources (M3-B1 = identification,
-  pas EDA complète)
+- Pas d'analyse statistique fouillée des sources, pas encore une EDA complète, pas d'identification claire des biais.
 - Pas d'AIPD juridique formelle (recommandation : escalader au DPO Acerox)
 - Pas d'analyse du modèle existant, ni de ses données d'entrainement.
 
