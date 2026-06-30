@@ -36,18 +36,18 @@ Ce que je comprends qu'il cherche vraiment : Mieux prédire les NC sur les 3 sit
 > 3-5 puces. Quelles sources ingérer en priorité ? Lesquelles écarter et
 > pourquoi ?
 
-- ...
-- ...
-- ...
+- Les 2 sources à ingérer en priorité sont capteurs_iot.csv et logs_machines.log. Elles contiennent toutes deux des informations capitales pour prévenir les non conformités.
+- La source erp_export.json donne des informations sur les commandes et les statuts, mais il ne semble pas y avoir de corrélation entre les statuts des commandes et les arrets, ni entre les salariés et les arrêts. C'est donc une source à écarter.
+ 
 
 ## 5. Points à clarifier avec Sébastien
 
 > 3-5 questions ouvertes restantes — preuve de lucidité sur ce qu'on ne
 > sait pas encore.
 
-1. ...
-2. ...
-3. ...
+1. Il y a 4 lignes de production sur Roubaix, 3 sur St Etienne, et 1 seule sur Lyon. Les 3 sites ne sont donc pas équivalents. Peut-on avoir des indications plus précises sur ces différentes lignes de production, leurs spécificités et leur ancienneté ?
+2. Quelle est la température nominale de fonctionnement de LINE-3 de Roubaix ou des lignes en générale si elles sont comparables ? 
+3. Quelle est la vibration nominale de fonctionnement de LINE-3 de Roubaix ou des lignes en générale si elles sont comparables ?  
 
 ## 6. Limites de cette note
 
@@ -56,8 +56,8 @@ Ce que je comprends qu'il cherche vraiment : Mieux prédire les NC sur les 3 sit
 - Pas d'analyse statistique fouillée des sources (M3-B1 = identification,
   pas EDA complète)
 - Pas d'AIPD juridique formelle (recommandation : escalader au DPO Acerox)
-- ...
+- Pas d'analyse du modèle existant, ni de ses données d'entrainement.
 
 ---
 
-*Note produite par <prénom>, <date>, dans le cadre du brief M3-B1 ATOS.*
+*Note produite par Célia, 30-06-2026, dans le cadre du brief M3-B1 ATOS.*
